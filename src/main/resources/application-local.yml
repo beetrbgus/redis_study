@@ -4,21 +4,23 @@ server:
     threads:
       max: 500
 spring:
+  config:
+    import: oauth2.yml
+
+  datasource:
+    url: jdbc:mysql:/localhost:3306/redis?useSSL=false
+    username: root
+    password: root
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.MySQL8Dialect
-  datasource:
-    url: jdbc:mysql://localhost:3306/redis?useSSL=false
-    username: root
-    password: root
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-
-
+        dialect: org.hibernate.dialect.MySQLDialect
+    generate-ddl: true
+    show-sql: true
 logging:
   level:
     org:

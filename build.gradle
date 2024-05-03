@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.5'
+    id 'org.springframework.boot' version '3.2.3'
     id 'io.spring.dependency-management' version '1.1.4'
 }
 
@@ -22,12 +22,41 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+
+    // DB
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     runtimeOnly 'com.mysql:mysql-connector-j'
+    // Spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    testImplementation 'org.springframework.security:spring-security-test'
+    // TSID
+    implementation 'com.github.f4b6a3:tsid-creator:5.2.3'
+    implementation "io.hypersistence:hypersistence-utils-hibernate-55:3.7.0"
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // querydsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
+
+    annotationProcessor(
+        "jakarta.persistence:jakarta.persistence-api",
+        "jakarta.annotation:jakarta.annotation-api",
+        "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
+    )
+
+    // https://mvnrepository.com/artifact/io.lettuce/lettuce-core
+    implementation 'io.lettuce:lettuce-core'
+
+    // javax.xml.bind는 자바 9에서 제외 됨
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
@@ -38,3 +67,12 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+    querydsl.extendsFrom compileClasspath
+}
+
+compileJava.dependsOn('clean')
