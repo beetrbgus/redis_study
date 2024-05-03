@@ -1,6 +1,7 @@
 package com.beetrb.redis_study.redis.config;
 
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 import java.time.Duration;
 
 @Configuration
+@EnableCaching
 public class CustomRedisCacheManagerConfig {
 
     @Bean
@@ -24,9 +26,9 @@ public class CustomRedisCacheManagerConfig {
                 .entryTtl(Duration.ofMinutes(3L))
             ;
         return RedisCacheManager.RedisCacheManagerBuilder
-            .fromConnectionFactory(connectionFactory)
-            .cacheDefaults(redisCacheConfiguration)
-            .build();
+                    .fromConnectionFactory(connectionFactory)
+                    .cacheDefaults(redisCacheConfiguration)
+                    .build();
     }
 
     /**

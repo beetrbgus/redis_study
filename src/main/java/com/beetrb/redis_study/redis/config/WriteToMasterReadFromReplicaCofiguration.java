@@ -20,9 +20,10 @@ public class WriteToMasterReadFromReplicaCofiguration {
     @Bean
     public LettuceConnectionFactory redisConnectionFactory() {
         // 사용할 읽기 / 쓰기 전략을 설정할 수 있음.
-        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-            .readFrom(ReadFrom.REPLICA_PREFERRED)
-            .build();
+        LettuceClientConfiguration clientConfig = LettuceClientConfiguration
+                                                        .builder()
+                                                        .readFrom(ReadFrom.REPLICA_PREFERRED)
+                                                        .build();
         /**
          * AWS 또는 비공개 주소를 사용하는 경우 RedisStandaloneConfiguration 대신
          * RedisStaticMasterReplicaConfiguration을 사용
