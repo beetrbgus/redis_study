@@ -1,14 +1,15 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.2.3'
-    id 'io.spring.dependency-management' version '1.1.4'
+    id 'org.springframework.boot' version '2.7.17'
+    id 'io.spring.dependency-management' version '1.0.15.RELEASE'
+    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
 }
 
-group = 'com.beetrb'
+group = 't1f7be'
 version = '0.0.1-SNAPSHOT'
 
 java {
-    sourceCompatibility = '17'
+    sourceCompatibility = '11'
 }
 
 configurations {
@@ -22,14 +23,15 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
-    implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // thymeleaf
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    // spring data redis
+    implementation 'org.springframework.data:spring-data-redis'
+    // lettuce
+    implementation 'io.lettuce:lettuce-core'
 
-    // DB
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    runtimeOnly 'com.mysql:mysql-connector-j'
     // Spring security
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -41,33 +43,50 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
-
-    // querydsl
-    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
-
-    annotationProcessor(
-        "jakarta.persistence:jakarta.persistence-api",
-        "jakarta.annotation:jakarta.annotation-api",
-        "com.querydsl:querydsl-apt:${queryDslVersion}:jakarta"
-    )
-
-    // https://mvnrepository.com/artifact/io.lettuce/lettuce-core
-    implementation 'io.lettuce:lettuce-core'
-
-    // javax.xml.bind는 자바 9에서 제외 됨
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
-
-
-    compileOnly 'org.projectlombok:lombok'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    annotationProcessor 'org.projectlombok:lombok'
+    // RDS
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.mysql:mysql-connector-j' //mysql 업데이트되어 이렇게 적어야함!
+    // Lombok
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    // S3
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    // MapStruct
+    implementation "org.mapstruct:mapstruct:${mapStructVersion}"
+    implementation "org.projectlombok:lombok-mapstruct-binding:${mapstructBindingVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapStructVersion}"
+    annotationProcessor "org.projectlombok:lombok-mapstruct-binding:${mapstructBindingVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.mapstruct:mapstruct-processor:1.5.5.Final"
+    // querydsl
+    implementation "com.querydsl:querydsl-jpa:${queryDslVersion}"
+    implementation "com.querydsl:querydsl-apt:${queryDslVersion}"
+    // LocalDateTime 파싱 객체
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+    //DTO 검증(NULL또는 '' 값	검증)
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
 
+// querydsl에서 사용할 경로 설정
+def querydslDir = "$buildDir/generated/querydsl"
+// JPA 사용 여부와 사용할 경로를 설정
+querydsl {
+    jpa = true
+    querydslSourcesDir = querydslDir
+}
+// build 시 사용할 sourceSet 추가
+sourceSets {
+    main.java.srcDir querydslDir
+}
+// querydsl 컴파일시 사용할 옵션 설정
+compileQuerydsl{
+    options.annotationProcessorPath = configurations.querydsl
+}
+// querydsl 이 compileClassPath 를 상속하도록 설정
 configurations {
     compileOnly {
         extendsFrom annotationProcessor
@@ -75,4 +94,6 @@ configurations {
     querydsl.extendsFrom compileClasspath
 }
 
-compileJava.dependsOn('clean')
+clean.doLast {
+    delete file(querydslDir)
+}

@@ -34,9 +34,9 @@ public class SecurityConfig implements WebMvcConfigurer {
         http.cors(corsConfiguration -> corsConfiguration.disable())
             .authorizeRequests()
                 .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-            .requestMatchers("/**").permitAll()
-            .requestMatchers(HttpMethod.POST, "/api/notice").hasAnyRole()
-            .requestMatchers(HttpMethod.GET,"/api/notice").permitAll()
+            .antMatchers("/**").permitAll()
+            .antMatchers(HttpMethod.POST, "/api/notice").hasAnyRole()
+            .antMatchers(HttpMethod.GET,"/api/notice").permitAll()
         ;
         http.formLogin(formLogin -> formLogin.disable())
             .csrf(csrf-> csrf.disable())

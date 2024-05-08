@@ -1,8 +1,9 @@
 package com.beetrb.redis_study.oauth2.converter;
 
 import com.beetrb.redis_study.oauth2.domain.UserRole;
-import jakarta.persistence.AttributeConverter;
-import jakarta.persistence.Converter;
+
+import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
 @Converter
 public class UserRoleConverter implements AttributeConverter<UserRole, String> {
