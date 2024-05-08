@@ -58,8 +58,7 @@ public class KakaoSocialOAuth2Service implements SocialOAuth2CustomService {
 
             if(response.getStatusCode() == HttpStatus.OK) {
                 Map<String,Object> kakaoOAuthResponseDto = objectMapper.readValue(response.getBody(), Map.class);
-                Map<String,Object> kakao_account = (Map<String,Object>)kakaoOAuthResponseDto.get("kakao_account");
-                return ProviderUserInfo.of((String)kakao_account.get("id"), SocialType.KAKAO, kakaoOAuthResponseDto);
+                return ProviderUserInfo.of("id", SocialType.KAKAO, kakaoOAuthResponseDto);
             } else {
                 throw new ApiException(ErrorCode.LOGIN_FAIL);
             }
