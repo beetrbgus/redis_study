@@ -1,5 +1,6 @@
 package com.beetrb.redis_study.redis.config;
 
+import com.beetrb.redis_study.oauth2.domain.User;
 import io.lettuce.core.ReadFrom;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 @Configuration
@@ -32,7 +34,7 @@ public class RedisConfig {
          * RedisStaticMasterReplicaConfiguration을 사용
          * -> 개별 서버간 Pub/Sub 메시지 전파가 누락되어 Pub/Sub 지원 X
         */
-        RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration("server", 6379);
+        RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration("localhost", 6379);
 
         return new LettuceConnectionFactory(serverConfig, clientConfig);
     }
@@ -43,7 +45,7 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
-        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(User.class));
 
         redisTemplate.setHashKeySerializer(new StringRedisSerializer());
         redisTemplate.setHashValueSerializer(new StringRedisSerializer());

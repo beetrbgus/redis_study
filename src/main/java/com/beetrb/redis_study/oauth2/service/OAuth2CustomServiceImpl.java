@@ -41,6 +41,7 @@ public class OAuth2CustomServiceImpl implements OAuth2CustomService {
 
         // 토큰으로 변환 시키기
         TokenInfo tokenInfo = authTokenConverter.principalToTokenInfo(userPrincipal);
+        tokenInfo.setUserId(user.getId());
         return tokenInfo;
     }
 
