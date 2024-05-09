@@ -45,9 +45,8 @@ public class OAuth2Controller {
     @GetMapping("oauth2/{providerName}/callback")
     public ResponseEntity<TokenInfo> getToken(AuthCodeReqDto authCodeReqDto
         , @PathVariable("providerName") String providerName
-        , HttpServletResponse response
-    ) throws JsonProcessingException {
-        SocialType socialType = SocialType.GOOGLE.getSocial(providerName);
+        , HttpServletResponse response) {
+        SocialType socialType = SocialType.getSocial(providerName);
         TokenInfo tokenInfo = oAuthUserService.login(authCodeReqDto, socialType);
         return ResponseEntity.ok(tokenInfo);
     }
