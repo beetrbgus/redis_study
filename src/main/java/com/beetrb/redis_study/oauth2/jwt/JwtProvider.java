@@ -33,8 +33,11 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 public class JwtProvider {
-    @Value("${bbeudde.jwt.accesstoken.expiryMills}")
+    @Value("${bbeudde.jwt.accessToken.expiryMills}")
     private long ACCESS_TOKEN_EXPIRE;
+
+    @Value("${bbeudde.jwt.refreshToken.expiryMills}")
+    private long REFRESH_TOKEN_EXPIRE;
     private final String tokenType = "Bearer ";
     @Value("${bbeudde.jwt.secret}")
     private String SECRETKEY;
@@ -58,18 +61,26 @@ public class JwtProvider {
         final byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(SECRETKEY);
         final Key KEY = Keys.hmacShaKeyFor(apiKeySecretBytes);
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + ACCESS_TOKEN_EXPIRE);
 
         String accessToken = Jwts.builder()
             .signWith(KEY, SignatureAlgorithm.HS512)
             .setSubject((userPrincipal.getNickName()))
             .setClaims(createClaims(userPrincipal))
             .setIssuedAt(now)
-            .setExpiration(expiry)
+            .setExpiration(new Date(now.getTime() + ACCESS_TOKEN_EXPIRE))
+            .compact();
+
+        String refreshToken = Jwts.builder()
+            .signWith(KEY, SignatureAlgorithm.HS512)
+            .setSubject((userPrincipal.getNickName()))
+            .setClaims(createClaims(userPrincipal))
+            .setIssuedAt(now)
+            .setExpiration(new Date(now.getTime() + REFRESH_TOKEN_EXPIRE))
             .compact();
 
         return TokenInfo.builder()
             .accessToken(accessToken)
+            .refreshToken(refreshToken)
             .tokenType(tokenType)
             .build();
     }

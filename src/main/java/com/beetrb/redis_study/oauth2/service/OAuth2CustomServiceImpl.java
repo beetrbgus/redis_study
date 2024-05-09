@@ -7,6 +7,7 @@ import com.beetrb.redis_study.oauth2.domain.provider.ProviderUserInfo;
 import com.beetrb.redis_study.oauth2.domain.provider.SocialType;
 import com.beetrb.redis_study.oauth2.dto.AuthCodeReqDto;
 import com.beetrb.redis_study.oauth2.jwt.AuthTokenConverter;
+import com.beetrb.redis_study.oauth2.jwt.TokenInfo;
 import com.beetrb.redis_study.oauth2.repository.UserRepository;
 import com.beetrb.redis_study.oauth2.service.provider.SocialOAuth2CustomService;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,7 +30,7 @@ public class OAuth2CustomServiceImpl implements OAuth2CustomService {
     }
 
     @Override
-    public String login(AuthCodeReqDto authCodeReqDto, SocialType socialType) {
+    public TokenInfo login(AuthCodeReqDto authCodeReqDto, SocialType socialType) {
         ProviderUserInfo userInfo = getUserInfo(authCodeReqDto.getCode(), socialType);
         User user = saveOrUpdate(userInfo);
         UserCustomPrincipal userPrincipal = UserCustomPrincipal.create(user);
@@ -39,8 +40,8 @@ public class OAuth2CustomServiceImpl implements OAuth2CustomService {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         // 토큰으로 변환 시키기
-        String loginToken = authTokenConverter.principalToToken(userPrincipal);
-        return loginToken;
+        TokenInfo tokenInfo = authTokenConverter.principalToTokenInfo(userPrincipal);
+        return tokenInfo;
     }
 
     private User saveOrUpdate(ProviderUserInfo providerUser) {
