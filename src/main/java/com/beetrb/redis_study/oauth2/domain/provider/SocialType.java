@@ -17,7 +17,7 @@ public enum SocialType {
     private final String code;
     private final String value;
 
-    public SocialType getSocial(String socialType) {
+    public static SocialType getSocial(String socialType) {
         return Arrays.stream(SocialType.values())
             .filter(social -> social.code.equals(socialType) || social.name().equals(socialType))
             .findFirst()
