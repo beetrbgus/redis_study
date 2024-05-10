@@ -25,7 +25,6 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(RedisTemplate redisTemplate, UserRepository userRepository) {
         this.redisTemplate = redisTemplate;
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(User.class));
         this.userRepository = userRepository;
     }
 
