@@ -1,15 +1,15 @@
 package com.beetrb.redis_study.user.service;
 
-import com.beetrb.redis_study.user.domain.User;
 import com.beetrb.redis_study.oauth2.exception.ApiException;
 import com.beetrb.redis_study.oauth2.exception.ErrorCode;
-import com.beetrb.redis_study.oauth2.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import com.beetrb.redis_study.user.domain.User;
+import com.beetrb.redis_study.user.domain.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,10 +19,15 @@ import java.util.List;
 
 @Slf4j
 @Repository
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final RedisTemplate redisTemplate;
     private final UserRepository userRepository;
+
+    public UserServiceImpl(RedisTemplate redisTemplate, UserRepository userRepository) {
+        this.redisTemplate = redisTemplate;
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(User.class));
+        this.userRepository = userRepository;
+    }
 
     public void save(final User user) {
         ValueOperations valueOperations = redisTemplate.opsForValue();
