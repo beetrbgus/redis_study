@@ -1,7 +1,7 @@
-package com.beetrb.redis_study.oauth2.domain;
+package com.beetrb.redis_study.user.domain;
 
-import com.beetrb.redis_study.oauth2.domain.provider.ProviderUserInfo;
-import com.beetrb.redis_study.oauth2.domain.provider.SocialType;
+import com.beetrb.redis_study.user.domain.provider.ProviderUserInfo;
+import com.beetrb.redis_study.user.domain.provider.SocialType;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;

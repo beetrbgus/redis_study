@@ -1,11 +1,10 @@
 package com.beetrb.redis_study.oauth2.controller;
 
-import com.beetrb.redis_study.oauth2.domain.provider.SocialType;
+import com.beetrb.redis_study.user.domain.provider.SocialType;
 import com.beetrb.redis_study.oauth2.dto.AuthCodeReqDto;
 import com.beetrb.redis_study.oauth2.jwt.TokenInfo;
 import com.beetrb.redis_study.oauth2.jwt.UserToken;
 import com.beetrb.redis_study.oauth2.service.OAuth2CustomService;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

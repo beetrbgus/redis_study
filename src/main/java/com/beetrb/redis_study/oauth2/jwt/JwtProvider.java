@@ -1,6 +1,6 @@
 package com.beetrb.redis_study.oauth2.jwt;
 
-import com.beetrb.redis_study.oauth2.domain.UserCustomPrincipal;
+import com.beetrb.redis_study.user.domain.UserCustomPrincipal;
 import com.beetrb.redis_study.oauth2.exception.ApiException;
 import com.beetrb.redis_study.oauth2.exception.ErrorCode;
 import io.jsonwebtoken.Claims;

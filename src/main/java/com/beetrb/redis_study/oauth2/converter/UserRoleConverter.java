@@ -1,6 +1,6 @@
 package com.beetrb.redis_study.oauth2.converter;
 
-import com.beetrb.redis_study.oauth2.domain.UserRole;
+import com.beetrb.redis_study.user.domain.UserRole;
 
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;

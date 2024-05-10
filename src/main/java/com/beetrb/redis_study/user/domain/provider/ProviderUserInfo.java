@@ -1,4 +1,4 @@
-package com.beetrb.redis_study.oauth2.domain.provider;
+package com.beetrb.redis_study.user.domain.provider;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

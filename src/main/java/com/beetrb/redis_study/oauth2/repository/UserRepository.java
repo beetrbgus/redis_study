@@ -1,7 +1,7 @@
 package com.beetrb.redis_study.oauth2.repository;
 
-import com.beetrb.redis_study.oauth2.domain.User;
-import com.beetrb.redis_study.oauth2.domain.provider.SocialType;
+import com.beetrb.redis_study.user.domain.User;
+import com.beetrb.redis_study.user.domain.provider.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

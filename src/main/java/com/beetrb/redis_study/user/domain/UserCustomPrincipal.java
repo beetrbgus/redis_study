@@ -1,6 +1,6 @@
-package com.beetrb.redis_study.oauth2.domain;
+package com.beetrb.redis_study.user.domain;
 
-import com.beetrb.redis_study.oauth2.domain.provider.SocialType;
+import com.beetrb.redis_study.user.domain.provider.SocialType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

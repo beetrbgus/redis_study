@@ -1,4 +1,4 @@
-package com.beetrb.redis_study.oauth2.domain.provider;
+package com.beetrb.redis_study.user.domain.provider;
 
 import com.beetrb.redis_study.oauth2.exception.ApiException;
 import com.beetrb.redis_study.oauth2.exception.ErrorCode;
