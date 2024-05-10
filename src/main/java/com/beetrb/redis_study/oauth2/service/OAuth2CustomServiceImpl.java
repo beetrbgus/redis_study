@@ -8,7 +8,7 @@ import com.beetrb.redis_study.user.domain.provider.SocialType;
 import com.beetrb.redis_study.oauth2.dto.AuthCodeReqDto;
 import com.beetrb.redis_study.oauth2.jwt.AuthTokenConverter;
 import com.beetrb.redis_study.oauth2.jwt.TokenInfo;
-import com.beetrb.redis_study.oauth2.repository.UserRepository;
+import com.beetrb.redis_study.user.domain.repository.UserRepository;
 import com.beetrb.redis_study.oauth2.service.provider.SocialOAuth2CustomService;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
