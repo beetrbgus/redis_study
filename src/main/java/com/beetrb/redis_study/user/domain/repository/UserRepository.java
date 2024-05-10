@@ -1,4 +1,4 @@
-package com.beetrb.redis_study.oauth2.repository;
+package com.beetrb.redis_study.user.domain.repository;
 
 import com.beetrb.redis_study.user.domain.User;
 import com.beetrb.redis_study.user.domain.provider.SocialType;
