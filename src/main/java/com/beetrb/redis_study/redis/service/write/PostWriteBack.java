@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,22 +24,28 @@ public class PostWriteBack {
 
     @Scheduled(fixedDelay = 1000L * 60 * 2) //
     public void savePost() {
-        log.info("\r\n 히히 돈다 돌아  : " + LocalDateTime.now());
-        ScanOptions scanOptions = ScanOptions.scanOptions()
-                                            .match(POST_KEY + "*")
-                                            .build();
-        Cursor postKeys = redisTemplate.scan(scanOptions);
+        try {
+            RedisSerializer<?> defaultSerializer = redisTemplate.getDefaultSerializer();
+            log.info("\r\n 히히 돈다 돌아  : " + LocalDateTime.now());
+            ScanOptions scanOptions = ScanOptions.scanOptions()
+                .match(POST_KEY + "*")
+                .build();
+            Cursor postKeys = redisTemplate.scan(scanOptions);
 
-        while(postKeys.hasNext()) {
-            String postKey = String.valueOf(postKeys.next());
-            String postId = postKey.substring(POST_KEY.length());
+            while(postKeys.hasNext()) {
+                String postKey = String.valueOf(postKeys.next());
+                String postId = postKey.substring(POST_KEY.length());
 
-            Post post = (Post) redisTemplate.opsForValue().get(postKey);
-            if(post != null) {
-                postRepository.save(post);
+                Post post = (Post) redisTemplate.opsForValue().get(postKey);
+                if(post != null) {
+                    postRepository.save(post);
+                }
+                // 키 제거
+                redisTemplate.delete(postKey);
             }
-            // 키 제거
-            redisTemplate.delete(postKey);
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("레디스 저장 과정 도중 에러가 발생했습니다.");
         }
     }
 }
