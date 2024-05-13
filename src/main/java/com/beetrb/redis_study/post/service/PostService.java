@@ -4,5 +4,5 @@ import com.beetrb.redis_study.post.domain.Post;
 import com.beetrb.redis_study.post.dto.request.CreatePostReqDTO;
 
 public interface PostService {
-    Post savePost(CreatePostReqDTO createPostReqDTO);
+    Post savePostWriteThrough(CreatePostReqDTO createPostReqDTO);
 }

@@ -16,11 +16,18 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostRedisRepository postRedisRepository;
 
+    /**
+     * Write-Through
+     *
+     * @param createPostReqDTO
+     * @return
+     */
     @Override
     @Transactional
-    public Post savePost(CreatePostReqDTO createPostReqDTO) {
+    public Post savePostWriteThrough(CreatePostReqDTO createPostReqDTO) {
         Post post = Post.create(createPostReqDTO);
         postRepository.save(post);
+        postRedisRepository.savePost(post);
         return post;
     }
 
@@ -28,13 +35,7 @@ public class PostServiceImpl implements PostService {
         Post post = postRepository.findById(postId)
             .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
         post.increaseViewCount();
-        // 조회수 증가
-        increaseViewCount(post.getId(), post.getViewCount());
-
         return post;
     }
 
-    private void increaseViewCount(Long postId, Long viewCount) {
-        postRedisRepository.setValues(String.valueOf(postId), String.valueOf(viewCount));
-    }
 }

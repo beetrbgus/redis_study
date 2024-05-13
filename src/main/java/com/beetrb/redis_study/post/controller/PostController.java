@@ -23,6 +23,6 @@ public class PostController {
 
     @PostMapping
     public void savePost(CreatePostReqDTO createPostReqDTO) {
-        Post post = postService.savePost(createPostReqDTO);
+        Post post = postService.savePostWriteThrough(createPostReqDTO);
     }
 }
