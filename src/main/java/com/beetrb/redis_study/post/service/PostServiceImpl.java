@@ -10,8 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final PostRedisRepository postRedisRepository;
@@ -31,11 +34,26 @@ public class PostServiceImpl implements PostService {
         return post;
     }
 
-    public Post getPost(Long postId) {
-        Post post = postRepository.findById(postId)
-            .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
-        post.increaseViewCount();
+    @Override
+    @Transactional
+    public Post savePost(CreatePostReqDTO createPostReqDTO) {
+        Post post = Post.create(createPostReqDTO);
+        postRepository.save(post);
         return post;
+    }
+
+    @Override
+    public Post getPost(Long postId) {
+        Optional<Post> postOptional = postRedisRepository.getPost(postId);
+
+        if(postOptional.isPresent()) {
+            return postOptional.get();
+        } else {
+            Post post = postRepository.findById(postId)
+                                       .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
+            postRedisRepository.savePost(post);
+            return post;
+        }
     }
 
 }
