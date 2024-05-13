@@ -8,7 +8,7 @@ spring:
     import: oauth2.yml
 
   datasource:
-    url: jdbc:mysql://localhost:3306/redis?useSSL=false
+    url: jdbc:mysql://localhost:3306/redis?useSSL=false&allowPublicKeyRetrieval=true
     username: root
     password: root
     driver-class-name: com.mysql.cj.jdbc.Driver
