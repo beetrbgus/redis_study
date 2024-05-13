@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class PostRedisRepository {
         redisTemplate.opsForValue().set(POST_KEY + post.getId(), post, Duration.ofMinutes(3));
     }
 
-    public Post getPost(String postId) {
-        return redisTemplate.opsForValue().get(POST_KEY + postId);
+    public Optional<Post> getPost(Long postId) {
+        return Optional.ofNullable(redisTemplate.opsForValue().get(POST_KEY + postId));
     }
 }
