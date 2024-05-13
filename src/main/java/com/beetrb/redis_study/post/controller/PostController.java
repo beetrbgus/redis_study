@@ -6,6 +6,7 @@ import com.beetrb.redis_study.post.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,12 @@ public class PostController {
     public ResponseEntity getFavoritePostList() {
 
         return ResponseEntity.of(null);
+    }
+
+    @GetMapping("/{postId}")
+    public ResponseEntity<Post> getPost(@PathVariable("postId") Long postId) {
+        Post post = postService.getPost(postId);
+        return ResponseEntity.ok(post);
     }
 
     @PostMapping("/write-through")
