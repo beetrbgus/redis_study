@@ -4,7 +4,6 @@ import io.lettuce.core.ReadFrom;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.RedisStaticMasterReplicaConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
@@ -34,12 +33,13 @@ public class RedisConfig {
          * RedisStaticMasterReplicaConfiguration을 사용
          * -> 개별 서버간 Pub/Sub 메시지 전파가 누락되어 Pub/Sub 지원 X
         */
-        RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration("localhost", 6379);
+/*        RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration("localhost", 6379);
+        slaveConfig.addNode("localhost", 6379);
+*/
+        // Master Slave 모델을 쓰기 위해서 RedisStaticMasterReplicaConfiguration 사용
         RedisStaticMasterReplicaConfiguration slaveConfig =
-            new RedisStaticMasterReplicaConfiguration("localhost", 6379);
+            new RedisStaticMasterReplicaConfiguration("localhost", 7010);
         slaveConfig.addNode("localhost", 7000);
-        slaveConfig.addNode("localhost", 7001);
-        slaveConfig.addNode("localhost", 7002);
 
         return new LettuceConnectionFactory(slaveConfig, clientConfig);
     }

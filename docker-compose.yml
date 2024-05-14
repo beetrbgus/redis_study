@@ -1,0 +1,23 @@
+services: # 컨테이너 설정
+  redis_master:
+    hostname: localhost
+    container_name: redis_master
+    image: redis
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 7010:6379
+
+  # slave 1
+  redis-node1:
+    hostname: localhost
+    container_name: redis_node1
+    image: redis
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - 7000:6379
+    command: redis-server --slaveof redis_master 6379
