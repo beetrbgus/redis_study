@@ -7,11 +7,13 @@ import com.beetrb.redis_study.post.domain.repository.PostRepository;
 import com.beetrb.redis_study.post.dto.request.CreatePostReqDTO;
 import com.beetrb.redis_study.redis.service.PostRedisRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -47,11 +49,14 @@ public class PostServiceImpl implements PostService {
         Optional<Post> postOptional = postRedisRepository.getPost(postId);
 
         if(postOptional.isPresent()) {
-            return postOptional.get();
+            Post post = postOptional.get();
+            log.info("레디스에서 가져온 데이터 : Post의 제목은  {}", post.getTitle());
+            return post;
         } else {
             Post post = postRepository.findById(postId)
                                        .orElseThrow(() -> new ApiException(ErrorCode.NOT_FOUND_POST));
             postRedisRepository.savePost(post);
+            log.info("DB에서 가져온 데이터 : Post의 제목은  {}", post.getTitle());
             return post;
         }
     }
