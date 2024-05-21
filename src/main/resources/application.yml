@@ -6,7 +6,13 @@ server:
 spring:
   config:
     import: oauth2.yml
-
+#  redis:
+#    sentinel:
+#      master: redis_master
+#      nodes:
+#        - localhost:26379
+#        - localhost:26380
+#        - localhost:26381
   datasource:
     url: jdbc:mysql://localhost:3306/redis?useSSL=false&allowPublicKeyRetrieval=true
     username: root

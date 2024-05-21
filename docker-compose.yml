@@ -4,57 +4,78 @@ services: # 컨테이너 설정
     image: 'bitnami/redis:latest'
     environment:
       - REDIS_REPLICATION_MODE=master
-      - REDIS_PASSWORD=redispassword
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - "6379:6379"
+      - "7010:6379"
   redis-node1:
     container_name: redis_node1
     image: 'bitnami/redis:latest'
     environment:
       - REDIS_REPLICATION_MODE=slave
       - REDIS_MASTER_HOST=redis_master
-      - REDIS_MASTER_PASSWORD=redispassword
-      - REDIS_PASSWORD=redispassword
+      - ALLOW_EMPTY_PASSWORD=yes
     ports:
       - "7000:6379"
     depends_on:
       - redis_master
-  sentinel-1:
-    image: 'bitnami/redis-sentinel:latest'
-    container_name: sentinel_1
+  redis-node2:
+    container_name: redis_node2
+    image: 'bitnami/redis:latest'
     environment:
-      - REDIS_MASTER_SET=mymaster
-      - REDIS_MASTER_HOST=127.0.0.1
-      - REDIS_MASTER_PASSWORD=redispassword
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7001:6379"
     depends_on:
       - redis_master
-      - redis-slave
-    ports:
-      - "26379:26379"
-  sentinel-2:
-    image: 'bitnami/redis-sentinel:latest'
-    container_name: sentinel_2
+  redis-node3:
+    container_name: redis_node3
+    image: 'bitnami/redis:latest'
     environment:
-      - REDIS_MASTER_SET=mymaster
-      - REDIS_MASTER_HOST=127.0.0.1
-      - REDIS_MASTER_PASSWORD=redispassword
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7002:6379"
     depends_on:
       - redis_master
-      - redis-slave
-    ports:
-      - "26380:26379"
-  sentinel-3:
-    image: 'bitnami/redis-sentinel:latest'
-    container_name: sentinel_3
-    environment:
-      - REDIS_MASTER_SET=mymaster
-      - REDIS_MASTER_HOST=127.0.0.1
-      - REDIS_MASTER_PASSWORD=redispassword
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
-    depends_on:
-      - redis_master
-      - redis-slave
-    ports:
-      - "26381:26379"
+#  sentinel-1:
+#    image: 'bitnami/redis-sentinel:latest'
+#    container_name: sentinel_1
+#    environment:
+#      - REDIS_MASTER_SET=mymaster
+#      - REDIS_MASTER_HOST=127.0.0.1
+#      - REDIS_MASTER_PASSWORD=redispassword
+#      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+#    depends_on:
+#      - redis_master
+#      - redis-slave
+#    ports:
+#      - "26379:26379"
+#  sentinel-2:
+#    image: 'bitnami/redis-sentinel:latest'
+#    container_name: sentinel_2
+#    environment:
+#      - REDIS_MASTER_SET=mymaster
+#      - REDIS_MASTER_HOST=127.0.0.1
+#      - REDIS_MASTER_PASSWORD=redispassword
+#      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+#    depends_on:
+#      - redis_master
+#      - redis-slave
+#    ports:
+#      - "26380:26379"
+#  sentinel-3:
+#    image: 'bitnami/redis-sentinel:latest'
+#    container_name: sentinel_3
+#    environment:
+#      - REDIS_MASTER_SET=mymaster
+#      - REDIS_MASTER_HOST=127.0.0.1
+#      - REDIS_MASTER_PASSWORD=redispassword
+#      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+#    depends_on:
+#      - redis_master
+#      - redis-slave
+#    ports:
+#      - "26381:26379"
