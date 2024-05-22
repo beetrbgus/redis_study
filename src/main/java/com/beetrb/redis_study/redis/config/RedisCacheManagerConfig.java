@@ -39,8 +39,8 @@ public class RedisCacheManagerConfig {
             .entryTtl(Duration.ofMinutes(3L));
         return RedisCacheManager.RedisCacheManagerBuilder
                     .fromConnectionFactory(connectionFactory)
-                    .withCacheConfiguration("Post", postConfig)
-                    .withCacheConfiguration("User", userConfig)
+                    .withCacheConfiguration(Post.class.getSimpleName(), postConfig)
+                    .withCacheConfiguration(User.class.getSimpleName(), userConfig)
                     .build();
     }
 
