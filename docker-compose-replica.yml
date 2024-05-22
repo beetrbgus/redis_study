@@ -1,0 +1,42 @@
+services: # 컨테이너 설정
+  redis_master:
+    container_name: redis_master
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7010:6379"
+  redis-node1:
+    container_name: redis_node1
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7000:6379"
+    depends_on:
+      - redis_master
+  redis-node2:
+    container_name: redis_node2
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7001:6379"
+    depends_on:
+      - redis_master
+  redis-node3:
+    container_name: redis_node3
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7002:6379"
+    depends_on:
+      - redis_master
