@@ -5,7 +5,9 @@ server:
       max: 500
 spring:
   config:
-    import: oauth2.yml
+    import:
+      - oauth2.yml
+      - redis-key.yml
 #  redis:
 #    sentinel:
 #      master: redis_master
