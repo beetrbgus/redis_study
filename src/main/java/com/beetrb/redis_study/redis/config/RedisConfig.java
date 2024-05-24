@@ -1,6 +1,8 @@
 package com.beetrb.redis_study.redis.config;
 
 import io.lettuce.core.ReadFrom;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -22,21 +24,23 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @return
  */
 @Configuration
+@RequiredArgsConstructor
 public class RedisConfig {
+    private final RedisProperties redisProperties;
     /**
      *  Master-Replica 설정
      */
-    @Bean
-    public RedisConnectionFactory redisMasterReplicaConnectionFactory() {
+/*    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration
                                                         .builder()
                                                         .readFrom(ReadFrom.REPLICA_PREFERRED)
                                                         .build();
-        /**
+        *//**
          * AWS 또는 비공개 주소를 사용하는 경우 RedisStandaloneConfiguration 대신
          * RedisStaticMasterReplicaConfiguration을 사용
          * -> 개별 서버간 Pub/Sub 메시지 전파가 누락되어 Pub/Sub 지원 X
-        */
+        *//*
         // Master Slave 모델을 쓰기 위해서 RedisStaticMasterReplicaConfiguration 사용
         RedisStaticMasterReplicaConfiguration slaveConfig =
             new RedisStaticMasterReplicaConfiguration("localhost", 7010);
@@ -45,13 +49,13 @@ public class RedisConfig {
         slaveConfig.addNode("localhost", 7002);
 
         return new LettuceConnectionFactory(slaveConfig, clientConfig);
-    }
+    }*/
 
     /**
      * Standard Alone 구성
      */
 /*    @Bean
-    public RedisConnectionFactory redisStandAloneConnectionFactory() {
+    public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration serverConfig = new RedisStandaloneConfiguration("localhost", 6379);
         return new LettuceConnectionFactory(serverConfig);
     }
@@ -60,25 +64,30 @@ public class RedisConfig {
     /**
      * Sentinel 구성
      */
-/*    @Bean
-    public RedisConnectionFactory redisSentinelConnectionFactory() {
+    @Bean
+    public RedisConnectionFactory redisConnectionFactory() {
         // 사용할 읽기 / 쓰기 전략을 설정할 수 있음.
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration
-            .builder()
-            .readFrom(ReadFrom.REPLICA_PREFERRED)
-            .build();
+                                                    .builder()
+                                                    .readFrom(ReadFrom.REPLICA_PREFERRED)
+                                                    .build();
         RedisSentinelConfiguration sentinelConfig = new RedisSentinelConfiguration()
-                                                    .master("mymaster")
-                                                    .sentinel("localhost", 26379)
-                                                    .sentinel("localhost", 26380)
-                                                    .sentinel("localhost", 26381);
+                                                    .master(redisProperties.getSentinel().getMaster());
+
+        redisProperties.getSentinel()
+            .getNodes()
+            .forEach(s -> {
+                // 다음과 같이 구성 localhost:[port]
+                String[] sentinelAddress = s.split(":");
+                sentinelConfig.sentinel(sentinelAddress[0], Integer.valueOf(sentinelAddress[1]));
+            });
 
         return new LettuceConnectionFactory(sentinelConfig, clientConfig);
-    }*/
+    }
     @Bean
     public RedisTemplate redisTemplate() {
         RedisTemplate redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisMasterReplicaConnectionFactory());
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
 
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         redisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());

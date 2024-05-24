@@ -6,8 +6,11 @@ services: # 컨테이너 설정
       - REDIS_REPLICATION_MODE=master
       - ALLOW_EMPTY_PASSWORD=yes
     ports:
-      - "7010:6379"
+      - "6379:6379"
+    networks:
+      - app-tier
   redis-node1:
+    hostname: redis_node1
     container_name: redis_node1
     image: 'bitnami/redis:latest'
     environment:
@@ -18,45 +21,99 @@ services: # 컨테이너 설정
       - "7000:6379"
     depends_on:
       - redis_master
+    networks:
+      - app-tier
+
+  redis-node2:
+    hostname: redis_node2
+    container_name: redis_node2
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7001:6379"
+    depends_on:
+      - redis_master
+    networks:
+      - app-tier
+
+  redis-node3:
+    hostname: redis_node3
+    container_name: redis_node3
+    image: 'bitnami/redis:latest'
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis_master
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - "7002:6379"
+    command: redis-server --replicaof redis_master 6379
+    depends_on:
+      - redis_master
+    networks:
+      - app-tier
+
   sentinel-1:
     image: 'bitnami/redis-sentinel:latest'
+    hostname: sentinel_1
     container_name: sentinel_1
     environment:
       - REDIS_MASTER_SET=mymaster
-      - REDIS_MASTER_HOST=127.0.0.1
-      - ALLOW_EMPTY_PASSWORD=yes
-#      - REDIS_MASTER_PASSWORD=redispassword
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_MASTER_HOST=redis_master
+      - REDIS_MASTER_PORT_NUMBER=6379
+      - REDIS_SENTINEL_QUORUM=2
+      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=3000
     depends_on:
       - redis_master
-      - redis-slave
+      - redis-node1
+      - redis-node2
+      - redis-node3
     ports:
       - "26379:26379"
+    networks:
+      - app-tier
+
   sentinel-2:
     image: 'bitnami/redis-sentinel:latest'
+    hostname: sentinel_2
     container_name: sentinel_2
     environment:
       - REDIS_MASTER_SET=mymaster
-      - REDIS_MASTER_HOST=127.0.0.1
-      - ALLOW_EMPTY_PASSWORD=yes
-#      - REDIS_MASTER_PASSWORD=redispassword
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_MASTER_HOST=redis_master
+      - REDIS_MASTER_PORT_NUMBER=6379
+      - REDIS_SENTINEL_QUORUM=2
+      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=3000
     depends_on:
       - redis_master
-      - redis-slave
+      - redis-node1
+      - redis-node2
+      - redis-node3
     ports:
       - "26380:26379"
+    networks:
+      - app-tier
+
   sentinel-3:
     image: 'bitnami/redis-sentinel:latest'
     container_name: sentinel_3
     environment:
       - REDIS_MASTER_SET=mymaster
-      - REDIS_MASTER_HOST=127.0.0.1
-      - ALLOW_EMPTY_PASSWORD=yes
-#      - REDIS_MASTER_PASSWORD=redispassword
-      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=10000
+      - REDIS_MASTER_HOST=redis_master
+      - REDIS_MASTER_PORT_NUMBER=6379
+      - REDIS_SENTINEL_QUORUM=2
+      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=3000
     depends_on:
       - redis_master
-      - redis-slave
+      - redis-node1
+      - redis-node2
+      - redis-node3
     ports:
       - "26381:26379"
+    networks:
+      - app-tier
+
+networks:
+  app-tier:
+    driver: bridge

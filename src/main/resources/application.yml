@@ -1,20 +1,20 @@
 server:
   port: 8081
-  tomcat:
-    threads:
-      max: 500
+
 spring:
   config:
     import:
       - oauth2.yml
       - redis-key.yml
-#  redis:
-#    sentinel:
-#      master: redis_master
-#      nodes:
-#        - localhost:26379
-#        - localhost:26380
-#        - localhost:26381
+  redis:
+    sentinel:
+      master: mymaster
+      nodes:
+        - localhost:26379
+        - localhost:26380
+        - localhost:26381
+    lettuce:
+      shutdown-timeout: 1000ms
   datasource:
     url: jdbc:mysql://localhost:3306/redis?useSSL=false&allowPublicKeyRetrieval=true
     username: root
