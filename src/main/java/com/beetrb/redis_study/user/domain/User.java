@@ -19,9 +19,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 @ToString
 @Getter
@@ -38,7 +41,10 @@ public class User {
     private String displayName; // provider에서 제공하는 닉네임
     private String domesticId; // provider에서 제공하는 고유 회원 SEQ
     private SocialType socialType;
+    @Enumerated(EnumType.STRING)
     private UserRole role;
+    @Enumerated(EnumType.STRING)
+    private GenderType gender;
 
     @CreatedDate
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -54,10 +60,13 @@ public class User {
     private LocalDateTime lastLoginedTime;
 
     public static User create(ProviderUserInfo providerUser) {
+        GenderType gender = Arrays.stream(GenderType.values()).filter(genderType -> genderType.name().equalsIgnoreCase(providerUser.getGender()))
+            .findFirst().orElse(GenderType.MALE);
         return User.builder()
             .id(TsidCreator.getTsid4096().toString())
             .nickname(providerUser.getName())
             .displayName(providerUser.getName())
+            .gender(gender)
             .domesticId(providerUser.getDomesticId())
             .socialType(providerUser.getSocialType())
             .role(UserRole.MEMBER)
