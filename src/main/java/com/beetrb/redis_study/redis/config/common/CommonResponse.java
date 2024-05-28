@@ -1,4 +1,4 @@
-package com.beetrb.redis_study.common;
+package com.beetrb.redis_study.redis.config.common;
 
 import com.beetrb.redis_study.oauth2.exception.ErrorCode;
 import lombok.AccessLevel;

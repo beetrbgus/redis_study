@@ -80,7 +80,7 @@ public class JwtProvider {
 
         return TokenInfo.builder()
             .accessToken(accessToken)
-            .refreshToken(refreshToken)
+//            .refreshToken(refreshToken)
             .tokenType(tokenType)
             .build();
     }
