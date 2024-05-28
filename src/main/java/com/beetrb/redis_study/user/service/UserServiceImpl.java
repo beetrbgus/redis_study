@@ -9,13 +9,13 @@ import org.springframework.data.redis.core.Cursor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Repository
@@ -28,9 +28,9 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    public void save(final User user) {
+    public void redisSave(final User user) {
         ValueOperations valueOperations = redisTemplate.opsForValue();
-        valueOperations.set(user.getId(), user, Duration.ofSeconds(20));
+        valueOperations.set("userId::" + user.getId(), user, Duration.ofSeconds(20));
     }
     @Override
     public User getUser(String userId) {
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId)
                                   .orElseThrow(()-> new ApiException(ErrorCode.NOT_FOUND_USER));
         log.info("user    :  {}", user.toString());
-        this.save(user);
+        this.redisSave(user);
 
         return user;
     }
