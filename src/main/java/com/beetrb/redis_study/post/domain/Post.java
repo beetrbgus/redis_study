@@ -34,7 +34,6 @@ public class Post {
     private Long id;
     private String title;
     private String content;
-    private long viewCount;
 
     @CreatedDate
     @JsonSerialize(using = LocalDateTimeSerializer.class)
@@ -48,11 +47,6 @@ public class Post {
         return Post.builder()
                 .title(createPostReqDTO.getTitle())
                 .content(createPostReqDTO.getContent())
-                .viewCount(0)
                 .build();
     }
-
-    public void increaseViewCount() {
-        this.viewCount++;
-    };
 }
