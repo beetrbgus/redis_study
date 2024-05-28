@@ -30,17 +30,18 @@ public class RedisConfig {
     /**
      *  Master-Replica 설정
      */
+    /*
+     * AWS 또는 비공개 주소를 사용하는 경우 RedisStandaloneConfiguration 대신
+     * RedisStaticMasterReplicaConfiguration을 사용
+     * -> 개별 서버간 Pub/Sub 메시지 전파가 누락되어 Pub/Sub 지원 X
+     */
 /*    @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         LettuceClientConfiguration clientConfig = LettuceClientConfiguration
                                                         .builder()
                                                         .readFrom(ReadFrom.REPLICA_PREFERRED)
                                                         .build();
-        *//**
-         * AWS 또는 비공개 주소를 사용하는 경우 RedisStandaloneConfiguration 대신
-         * RedisStaticMasterReplicaConfiguration을 사용
-         * -> 개별 서버간 Pub/Sub 메시지 전파가 누락되어 Pub/Sub 지원 X
-        *//*
+
         // Master Slave 모델을 쓰기 위해서 RedisStaticMasterReplicaConfiguration 사용
         RedisStaticMasterReplicaConfiguration slaveConfig =
             new RedisStaticMasterReplicaConfiguration("localhost", 7010);
