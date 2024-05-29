@@ -1,5 +1,6 @@
 package com.beetrb.redis_study.product.domain;
 
+import com.beetrb.redis_study.order.domain.Orders;
 import com.beetrb.redis_study.product.dto.ProductCreateReqDTO;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,8 +12,11 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Builder
@@ -29,6 +33,9 @@ public class Products {
     private String manufacturer;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    @OneToMany(mappedBy = "products")
+    private List<Orders> orders = new ArrayList<>();
 
     public static Products create(ProductCreateReqDTO createReqDTO) {
         return Products.builder()
