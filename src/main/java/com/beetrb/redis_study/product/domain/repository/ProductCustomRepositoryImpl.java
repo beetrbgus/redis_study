@@ -30,14 +30,15 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
                     orders.count().intValue()
                 )
             )
-            .from(products)
-            .innerJoin(orders)
-                .on(products.eq(orders.products))
+            .from(orders)
+            .innerJoin(products)
+                .on(products.id.eq(orders.products.id))
+            .fetchJoin()
             .where(
                 searchCategory(categoryType)
             )
-            .groupBy(orders.id)
-            .orderBy(orders.id.count().desc())
+            .groupBy(products.id)
+            .orderBy(products.id.count().desc())
             .limit(20)
             .fetch();
     }
